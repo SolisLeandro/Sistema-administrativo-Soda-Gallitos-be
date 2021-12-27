@@ -8,27 +8,47 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
-/*      ----------ejemplos----------
-app.get('/getNotes/:userId', async (req, res) => {
-    var response = await sqlServer.getNotes(req.params.userId)
+//Table
+app.get('/getTables', async (req, res) => {
+    var response = await sqlServer.getTables()
     res.send(response.recordset)
 })
 
-app.post('/createNote/:userId&:title&:content', async (req, res) => {
-    var response = await sqlServer.createNote(req.params.userId, req.params.title, req.params.content)
-    res.send(response.recordset)
-})
-
-app.delete('/deleteNote/:noteId', async (req, res) => {
-    var response = await sqlServer.deleteNote(req.params.noteId)
+app.delete('/deleteTable/:tableId', async (req, res) => {
+    var response = await sqlServer.deleteTable(req.params.tableId)
     res.send(response)
 })
 
-app.post('/updateNote/:noteId&:title&:content', async (req, res) => {
-    var response = await sqlServer.updateNote(req.params.noteId, req.params.title, req.params.content)
-    res.send(response.recordset[0])
+app.post('/updateTable/:tableId&:title', async (req, res) => {
+    var response = await sqlServer.updateTable(req.params.tableId, req.params.title)
+    res.send(response)
 })
-*/
+
+app.post('/createTable/:title', async (req, res) => {
+    var response = await sqlServer.createTable(req.params.title)
+    res.send(response)
+})
+
+//elements
+app.get('/getElements', async (req, res) => {
+    var response = await sqlServer.getElements()
+    res.send(response.recordset)
+})
+
+app.delete('/deleteElement/:elementId', async (req, res) => {
+    var response = await sqlServer.deleteElement(req.params.elementId)
+    res.send(response)
+})
+
+app.post('/updateElement/:elementId&:title&:aditional&:price', async (req, res) => {
+    var response = await sqlServer.updateElement(req.params.elementId, req.params.title,req.params.aditional, req.params.price)
+    res.send(response)
+})
+
+app.post('/createElement/:title&:aditional&:price', async (req, res) => {
+    var response = await sqlServer.createElement(req.params.title,req.params.aditional, req.params.price)
+    res.send(response)
+})
 
 app.listen(4000, () => {
     console.log("server running on port 4000")
