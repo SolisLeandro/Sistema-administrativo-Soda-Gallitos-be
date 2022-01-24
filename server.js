@@ -8,6 +8,10 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
+app.listen(4000, () => {
+    console.log("server running on port 4000")
+})
+
 //Table
 app.get('/getTables', async (req, res) => {
     var response = await sqlServer.getTables()
@@ -41,15 +45,52 @@ app.delete('/deleteElement/:elementId', async (req, res) => {
 })
 
 app.post('/updateElement/:elementId&:title&:aditional&:price', async (req, res) => {
-    var response = await sqlServer.updateElement(req.params.elementId, req.params.title,req.params.aditional, req.params.price)
+    var response = await sqlServer.updateElement(req.params.elementId, req.params.title, req.params.aditional, req.params.price)
     res.send(response)
 })
 
 app.post('/createElement/:title&:aditional&:price', async (req, res) => {
-    var response = await sqlServer.createElement(req.params.title,req.params.aditional, req.params.price)
+    var response = await sqlServer.createElement(req.params.title, req.params.aditional, req.params.price)
     res.send(response)
 })
 
-app.listen(4000, () => {
-    console.log("server running on port 4000")
+//dishes
+app.post('/createDish/:elementsId&:name&:total', async (req, res) => {
+    var response = await sqlServer.createDish(JSON.parse(req.params.elementsId), req.params.name, req.params.total)
+    res.send(response)
+})
+
+app.get('/getDishes', async (req, res) => {
+    var response = await sqlServer.getDishes()
+    var dishes = []
+    response.recordset.forEach(element => {
+        dishes.push(JSON.parse(element[Object.keys(element)]))
+    });
+    res.send(dishes)
+})
+
+app.delete('/deleteDish/:dishId', async (req, res) => {
+    var response = await sqlServer.deleteDish(req.params.dishId)
+    res.send(response)
+})
+
+app.post('/updateDish/:dishId&:elementsId&:name&:total', async (req, res) => {
+    var response = await sqlServer.updateDish(req.params.dishId, JSON.parse(req.params.elementsId), req.params.name, req.params.total)
+    res.send(response)
+})
+
+//orders
+app.get('/getOrders', async (req, res) => {
+    var response = await sqlServer.getOrders()
+    var orders = []
+    response.recordset.forEach(element => {
+        orders.push(JSON.parse(element[Object.keys(element)]))
+    });
+
+    res.send(orders)
+})
+
+app.post('/finishOrder/:orderId', async (req, res) => {
+    var response = await sqlServer.finishOrder(req.params.orderId)
+    res.send(response)
 })

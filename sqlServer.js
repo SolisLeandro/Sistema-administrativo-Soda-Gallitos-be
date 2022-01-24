@@ -136,5 +136,103 @@ module.exports = {
         } catch (err) {
             console.log("Update notes error: ", err)
         }
-    }
+    },
+
+    //Dishes
+    getDishes: async function () {
+        try {
+            let pool = await sql.connect(config);
+            let results = await pool.request()
+                .execute('GetDishesWithElements')
+
+            return results
+
+        } catch (err) {
+            console.log("Get dishes error: ", err)
+        }
+    },
+
+    createDish: async function (elementsId, name, total) {
+        try {
+            var elementsIDS = []
+            elementsId.forEach(element => {
+                elementsIDS.push(element.id)
+            });
+            let pool = await sql.connect(config);
+            await pool.request()
+                .input('pElementsIdList', sql.NVarChar, JSON.stringify({ "Elementos": elementsIDS }))
+                .input('pName', sql.NVarChar, name)
+                .input('pPrice', sql.Money, total)
+                .execute('CreateDishWithElements')
+
+            return 200
+
+        } catch (err) {
+            console.log("Create dish error: ", err)
+            return 500
+        }
+    },
+
+    deleteDish: async function (dishId) {
+        try {
+            let pool = await sql.connect(config);
+            await pool.request()
+                .input('pIdDish', sql.Int, dishId)
+                .execute('DeleteDish')
+            return 200
+
+        } catch (err) {
+            console.log("Delete dish error: ", err)
+            return 500
+        }
+    },
+
+    updateDish: async function (dishId, elementsId, name, total) {
+        try {
+            var elementsIDS = []
+            elementsId.forEach(element => {
+                elementsIDS.push(element.id)
+            });
+            let pool = await sql.connect(config);
+            await pool.request()
+                .input('pIdDish', sql.Int, dishId)
+                .input('pElementsIdList', sql.NVarChar, JSON.stringify({ "Elementos": elementsIDS }))
+                .input('pName', sql.NVarChar, name)
+                .input('pPrice', sql.Money, total)
+                .execute('EditDishWithElements')
+
+            return 200
+
+        } catch (err) {
+            console.log("Update dish error: ", err)
+            return 500
+        }
+    },
+
+    //orders
+    getOrders: async function () {
+        try {
+            let pool = await sql.connect(config);
+            let results = await pool.request()
+                .execute('GetProcessedOrders')
+
+            return results
+
+        } catch (err) {
+            console.log("Get orders error: ", err)
+        }
+    },
+    finishOrder: async function (orderId) {
+        try {
+            let pool = await sql.connect(config);
+            let results = await pool.request()
+                .input('pIdOrden', sql.Int, orderId)
+                .execute('finishOrder')
+
+            return results
+
+        } catch (err) {
+            console.log("Get orders error: ", err)
+        }
+    },
 }
