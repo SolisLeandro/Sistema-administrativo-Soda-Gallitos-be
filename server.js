@@ -82,8 +82,10 @@ app.post('/updateDish/:dishId&:elementsId&:name&:total', async (req, res) => {
 //orders
 app.get('/getOrders', async (req, res) => {
     var response = await sqlServer.getOrders()
+    console.log(response)
     var orders = []
     response.recordset.forEach(element => {
+        console.log(element)
         orders.push(JSON.parse(element[Object.keys(element)]))
     });
 
@@ -92,5 +94,22 @@ app.get('/getOrders', async (req, res) => {
 
 app.post('/finishOrder/:orderId', async (req, res) => {
     var response = await sqlServer.finishOrder(req.params.orderId)
+    res.send(response)
+})
+
+//Table orders
+app.get('/getTableOrders', async (req, res) => {
+    var response = await sqlServer.getTableOrders()
+    console.log("getTableOrders",response)
+    var orders = []
+    response.recordset.forEach(element => {
+        orders.push(JSON.parse(element[Object.keys(element)]))
+    });
+
+    res.send(orders)
+})
+
+app.post('/payOrder/:orderId', async (req, res) => {
+    var response = await sqlServer.payOrder(req.params.orderId)
     res.send(response)
 })

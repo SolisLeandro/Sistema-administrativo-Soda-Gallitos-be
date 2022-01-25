@@ -235,4 +235,31 @@ module.exports = {
             console.log("Get orders error: ", err)
         }
     },
+
+    //table orders
+    getTableOrders: async function () {
+        try {
+            let pool = await sql.connect(config);
+            let results = await pool.request()
+                .execute('GetTableOrders')
+
+            return results
+
+        } catch (err) {
+            console.log("Get orders error: ", err)
+        }
+    },
+    payOrder: async function (orderId) {
+        try {
+            let pool = await sql.connect(config);
+            let results = await pool.request()
+                .input('pIdOrder', sql.Int, orderId)
+                .execute('payOrder')
+
+            return results
+
+        } catch (err) {
+            console.log("Get orders error: ", err)
+        }
+    },
 }
